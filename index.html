@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Foodprint Calculator</title>
     <style>
-        /* Global Styles */
-        * {
+         /* Global Styles */
+         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -20,86 +19,34 @@
             background-size: cover;
         }
 
-        #showcase {
-            height: 30vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 2s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        .center {
-            color: rgb(218, 151, 191);
-        }
-
-        hr {
-            width: 200px;
-            margin-top: 6px;
-            margin-bottom: 20px;
-            background-color: white;
-            height: 2px;
-        }
-
-        #big-header {
-            font-size: 55px;
-            font-weight: bold;
-            color: #0C0305;
-            animation: slideIn 1s ease-out;
-        }
-
-        @keyframes slideIn {
-            0% { transform: translateY(-50px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        #small-header {
-            font-size: 20px;
-            font-weight: 500;
-            color: black;
-        }
-
-        #slider-container {
-            width: 80%;
-            margin: 20px auto;
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            animation: bounceIn 1.5s ease-out;
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            60% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-
-        h4 {
+        h1 {
             text-align: center;
-            color: #333;
-            font-family: "Open Sans", sans-serif;
-            font-weight: bold;
+            font-size: 40px;
+            color: #0C0305;
+            margin: 20px 0;
         }
 
-        .food-item-container {
+        #foodItemsContainer {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 1200px;
         }
 
         .food-item {
             background-color: #e0f7fa;
-            border-radius: 10px;
+            border-radius: 20px; /* Curved corners */
             padding: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .food-item:hover {
@@ -128,7 +75,7 @@
 
         #submitButton {
             display: inline-block;
-            margin-top: 20px;
+            margin: 20px auto;
             background-color: #32b269;
             color: white;
             border: none;
@@ -137,24 +84,41 @@
             border-radius: 30px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            text-align: center;
         }
 
         #submitButton:hover {
             background-color: #28a257;
         }
 
-        .results-container {
+        #results {
+            display: none; /* Initially hidden */
             margin-top: 40px;
-            display: flex;
-            justify-content: space-around;
             text-align: center;
+        }
+
+        .results-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* Start invisible for animation */
+            transform: translateY(20px); /* Start lower for animation */
+            animation: fadeIn 0.5s forwards; /* Fade in effect */
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .result-box {
             background-color: #f1f8e9;
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 20px; /* Curved corners */
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin: 0 10px; /* Space between result boxes */
             transition: transform 0.3s ease;
         }
 
@@ -176,111 +140,172 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header id="showcase">
-        <div class="center">
-            <p id="big-header">FOODPRINT CALCULATOR</p>
-            <hr>
-            <p id="small-header">Discover the environmental impact of your diet. Select servings for each food item below.</p>
+    <h1>Foodprint Calculator</h1>
+    <div id="foodItemsContainer"></div>
+    <button id="submitButton">Calculate Footprint</button>
+
+    <div id="results" class="results-container">
+        <div class="result-box">
+            <div class="result-title">Water:</div>
+            <div class="result-value" id="waterL">0 L</div>
         </div>
-    </header>
-
-    <!-- Food Items and Calculator -->
-    <div id="slider-container">
-        <h4>Select Servings Per Week</h4>
-
-        <div class="food-item-container">
-            <!-- Food item containers -->
-            <div class="food-item">
-                <label for="beef">Beef:</label>
-                <input type="number" id="beef" value="0" min="0">
-            </div>
-            <div class="food-item">
-                <label for="chicken">Chicken:</label>
-                <input type="number" id="chicken" value="0" min="0">
-            </div>
-            <div class="food-item">
-                <label for="fish">Fish:</label>
-                <input type="number" id="fish" value="0" min="0">
-            </div>
-            <div class="food-item">
-                <label for="tofu">Tofu:</label>
-                <input type="number" id="tofu" value="0" min="0">
-            </div>
-            <div class="food-item">
-                <label for="bread">Bread:</label>
-                <input type="number" id="bread" value="0" min="0">
-            </div>
-            <div class="food-item">
-                <label for="rice">Rice:</label>
-                <input type="number" id="rice" value="0" min="0">
-            </div>
-            <div class="food-item">
-                <label for="pulses">Pulses:</label>
-                <input type="number" id="pulses" value="0" min="0">
-            </div>
-            <div class="food-item">
-                <label for="milk">Milk:</label>
-                <input type="number" id="milk" value="0" min="0">
-            </div>
+        <div class="result-box">
+            <div class="result-title">Carbon:</div>
+            <div class="result-value" id="carbonKG">0 kg</div>
         </div>
-
-        <center>
-            <button id="submitButton">Calculate Footprint</button>
-        </center>
-
-        <!-- Results Display -->
-        <div class="results-container">
-            <div class="result-box">
-                <div class="result-title">Water Footprint</div>
-                <div class="result-value" id="waterL">0 L</div>
-            </div>
-            <div class="result-box">
-                <div class="result-title">Carbon Footprint</div>
-                <div class="result-value" id="carbonKG">0 kg</div>
-            </div>
-            <div class="result-box">
-                <div class="result-title">Nitrogen Footprint</div>
-                <div class="result-value" id="nitrogenG">0 g</div>
-            </div>
+        <div class="result-box">
+            <div class="result-title">Nitrogen:</div>
+            <div class="result-value" id="nitrogenG">0 g</div>
         </div>
     </div>
 
     <script>
-        var carbon_footprints = [2.25, 0.434, 0.4, 0.587, 0.32, 0.24, 0.2, 0.78];
-        var nitrogen_footprints = [28, 9.93, 12, 11.3, 1.8, 1.5, 1.2, 5.5];
-        
-        // Correct water footprints (per serving in liters)
-        var water_footprints = [15415, 4325, 3850, 2145, 1608, 2497, 4055, 1020];
+        const foodItems = [
+            { name: "Rice", carbon: 1.5, nitrogen: 1.2, water: 2500 },
+            { name: "Wheat", carbon: 0.5, nitrogen: 1.0, water: 1500 },
+            { name: "Potato", carbon: 0.2, nitrogen: 0.3, water: 500 },
+            { name: "Tomato", carbon: 0.3, nitrogen: 0.4, water: 800 },
+            { name: "Onion", carbon: 0.1, nitrogen: 0.2, water: 600 },
+            { name: "Carrot", carbon: 0.2, nitrogen: 0.3, water: 500 },
+            { name: "Cabbage", carbon: 0.3, nitrogen: 0.4, water: 600 },
+            { name: "Spinach", carbon: 0.4, nitrogen: 0.5, water: 700 },
+            { name: "Broccoli", carbon: 0.5, nitrogen: 0.6, water: 800 },
+            { name: "Cauliflower", carbon: 0.5, nitrogen: 0.5, water: 750 },
+            { name: "Bell Pepper", carbon: 0.4, nitrogen: 0.5, water: 600 },
+            { name: "Cucumber", carbon: 0.3, nitrogen: 0.4, water: 500 },
+            { name: "Zucchini", carbon: 0.4, nitrogen: 0.5, water: 700 },
+            { name: "Eggplant", carbon: 0.5, nitrogen: 0.6, water: 800 },
+            { name: "Lettuce", carbon: 0.2, nitrogen: 0.3, water: 400 },
+            { name: "Beetroot", carbon: 0.3, nitrogen: 0.4, water: 600 },
+            { name: "Green Beans", carbon: 0.4, nitrogen: 0.5, water: 700 },
+            { name: "Peas", carbon: 0.3, nitrogen: 0.4, water: 600 },
+            { name: "Pumpkin", carbon: 0.2, nitrogen: 0.3, water: 500 },
+            { name: "Mushrooms", carbon: 0.4, nitrogen: 0.3, water: 1000 },
+            { name: "Rice Noodles", carbon: 0.6, nitrogen: 1.0, water: 2000 },
+            { name: "Pasta", carbon: 0.5, nitrogen: 1.0, water: 2000 },
+            { name: "Quinoa", carbon: 0.9, nitrogen: 1.5, water: 3000 },
+            { name: "Couscous", carbon: 0.3, nitrogen: 1.0, water: 1500 },
+            { name: "Oats", carbon: 0.5, nitrogen: 1.0, water: 1500 },
+            { name: "Granola", carbon: 0.6, nitrogen: 1.5, water: 2000 },
+            { name: "Nuts (Almonds)", carbon: 1.4, nitrogen: 1.0, water: 12000 },
+            { name: "Nuts (Cashews)", carbon: 1.2, nitrogen: 1.2, water: 8000 },
+            { name: "Peanut Butter", carbon: 0.5, nitrogen: 1.0, water: 5000 },
+            { name: "Chocolate", carbon: 2.2, nitrogen: 3.0, water: 2800 },
+            { name: "Honey", carbon: 0.6, nitrogen: 0.5, water: 1000 },
+            { name: "Sugar", carbon: 0.1, nitrogen: 0.5, water: 2000 },
+            { name: "Jams", carbon: 0.5, nitrogen: 0.5, water: 1200 },
+            { name: "Ketchup", carbon: 0.4, nitrogen: 0.3, water: 900 },
+            { name: "Mayonnaise", carbon: 1.5, nitrogen: 1.0, water: 2000 },
+            { name: "Salad Dressing", carbon: 0.4, nitrogen: 0.6, water: 500 },
+            { name: "Soy Sauce", carbon: 0.5, nitrogen: 0.5, water: 1000 },
+            { name: "Salsa", carbon: 0.4, nitrogen: 0.4, water: 700 },
+            { name: "Chili Sauce", carbon: 0.5, nitrogen: 1.0, water: 800 },
+            { name: "Mustard", carbon: 0.3, nitrogen: 0.5, water: 500 },
+            { name: "Curry Paste", carbon: 0.9, nitrogen: 1.2, water: 1200 },
+            { name: "Coconut Milk", carbon: 1.0, nitrogen: 1.0, water: 3000 },
+            { name: "Cream", carbon: 1.1, nitrogen: 1.5, water: 4000 },
+            { name: "Ice Cream", carbon: 1.5, nitrogen: 2.0, water: 2500 },
+            { name: "Frozen Vegetables", carbon: 0.4, nitrogen: 0.8, water: 700 },
+            { name: "Frozen Fruits", carbon: 0.3, nitrogen: 0.5, water: 600 },
+            { name: "Dried Fruits", carbon: 1.0, nitrogen: 1.0, water: 1500 },
+            { name: "Potato Chips", carbon: 0.8, nitrogen: 1.0, water: 1200 },
+            { name: "Snacks", carbon: 0.6, nitrogen: 0.8, water: 1000 },
+            { name: "Popcorn", carbon: 0.3, nitrogen: 0.4, water: 500 },
+            { name: "Tortilla Chips", carbon: 0.6, nitrogen: 0.8, water: 1100 },
+            { name: "Soda", carbon: 0.2, nitrogen: 0.3, water: 1000 },
+            { name: "Fruit Juice", carbon: 0.4, nitrogen: 0.5, water: 800 },
+            { name: "Coffee", carbon: 0.7, nitrogen: 0.9, water: 1400 },
+            { name: "Tea", carbon: 0.5, nitrogen: 0.7, water: 1000 },
+            { name: "Beer", carbon: 0.9, nitrogen: 1.0, water: 3000 },
+            { name: "Wine", carbon: 1.0, nitrogen: 1.2, water: 3000 },
+            { name: "Spirits", carbon: 1.5, nitrogen: 2.0, water: 4000 },
+            { name: "Smoothies", carbon: 0.5, nitrogen: 0.6, water: 1200 },
+            { name: "Protein Powder", carbon: 2.0, nitrogen: 3.0, water: 2000 },
+            { name: "Energy Bars", carbon: 1.0, nitrogen: 1.2, water: 1200 },
+            { name: "Granola Bars", carbon: 0.9, nitrogen: 1.0, water: 1500 },
+            { name: "Meat (Beef)", carbon: 10.0, nitrogen: 4.0, water: 15000 },
+            { name: "Meat (Pork)", carbon: 7.0, nitrogen: 2.0, water: 6000 },
+            { name: "Meat (Chicken)", carbon: 5.0, nitrogen: 2.0, water: 4000 },
+            { name: "Fish", carbon: 3.0, nitrogen: 1.0, water: 2000 },
+            { name: "Eggs", carbon: 1.0, nitrogen: 1.2, water: 3000 },
+            { name: "Milk", carbon: 1.0, nitrogen: 1.5, water: 1000 },
+            { name: "Yogurt", carbon: 0.7, nitrogen: 0.8, water: 2000 },
+            { name: "Cheese", carbon: 2.5, nitrogen: 2.0, water: 5000 },
+            { name: "Cream Cheese", carbon: 1.2, nitrogen: 1.5, water: 1800 },
+            { name: "Soft Cheese", carbon: 1.0, nitrogen: 1.2, water: 1700 },
+            { name: "Hard Cheese", carbon: 1.5, nitrogen: 1.8, water: 2300 },
+            { name: "Savory Snacks", carbon: 0.6, nitrogen: 0.8, water: 900 },
+            { name: "Bread", carbon: 0.5, nitrogen: 0.7, water: 1200 },
+            { name: "Bagels", carbon: 0.7, nitrogen: 0.9, water: 1500 },
+            { name: "Croissants", carbon: 0.9, nitrogen: 1.0, water: 1800 },
+            { name: "Pancakes", carbon: 0.6, nitrogen: 0.8, water: 1200 },
+            { name: "Waffles", carbon: 0.7, nitrogen: 0.9, water: 1500 },
+            { name: "Scones", carbon: 0.8, nitrogen: 1.0, water: 1800 },
+            { name: "Pies", carbon: 0.9, nitrogen: 1.2, water: 2000 },
+            { name: "Cakes", carbon: 1.0, nitrogen: 1.5, water: 2200 },
+            { name: "Cookies", carbon: 0.8, nitrogen: 1.0, water: 1800 },
+            { name: "Brownies", carbon: 0.9, nitrogen: 1.1, water: 2000 },
+            { name: "Puddings", carbon: 0.7, nitrogen: 0.8, water: 1500 },
+            { name: "Gelato", carbon: 1.0, nitrogen: 1.2, water: 2500 },
+            { name: "Popsicles", carbon: 0.4, nitrogen: 0.5, water: 1000 },
+            { name: "Fruit Salads", carbon: 0.2, nitrogen: 0.3, water: 800 },
+            { name: "Vegetable Salads", carbon: 0.2, nitrogen: 0.3, water: 600 },
+            { name: "Rice Cakes", carbon: 0.4, nitrogen: 0.5, water: 1000 },
+            { name: "Sushi", carbon: 1.5, nitrogen: 2.0, water: 2000 },
+            { name: "Naan", carbon: 0.5, nitrogen: 0.6, water: 800 },
+            { name: "Paratha", carbon: 0.7, nitrogen: 0.8, water: 1200 },
+            { name: "Dumplings", carbon: 1.0, nitrogen: 1.2, water: 1500 },
+            { name: "Tacos", carbon: 1.1, nitrogen: 1.0, water: 1800 },
+            { name: "Sandwiches", carbon: 1.0, nitrogen: 1.0, water: 2000 },
+            { name: "Burgers", carbon: 1.5, nitrogen: 2.0, water: 2500 },
+            { name: "Wraps", carbon: 1.0, nitrogen: 1.0, water: 1800 },
+            { name: "Hot Dogs", carbon: 1.3, nitrogen: 1.2, water: 2000 }
+        ];
 
-        function calculateFootprint() {
-            var foodServings_array = [
-                parseInt(document.getElementById("beef").value),
-                parseInt(document.getElementById("chicken").value),
-                parseInt(document.getElementById("fish").value),
-                parseInt(document.getElementById("tofu").value),
-                parseInt(document.getElementById("bread").value),
-                parseInt(document.getElementById("rice").value),
-                parseInt(document.getElementById("pulses").value),
-                parseInt(document.getElementById("milk").value)
-            ];
+        const foodItemsContainer = document.getElementById("foodItemsContainer");
 
-            var totalCarbonFootprint = 0;
-            var totalNitrogenFootprint = 0;
-            var totalWaterFootprint = 0;
+        // Generate Food Items Input
+        foodItems.forEach(item => {
+            const foodItemDiv = document.createElement("div");
+            foodItemDiv.className = "food-item";
 
-            for (var i = 0; i < foodServings_array.length; i++) {
-                totalCarbonFootprint += foodServings_array[i] * carbon_footprints[i];
-                totalNitrogenFootprint += foodServings_array[i] * nitrogen_footprints[i];
-                totalWaterFootprint += foodServings_array[i] * water_footprints[i];
-            }
+            foodItemDiv.innerHTML = `
+                <h5>${item.name}</h5>
+                <label for="${item.name.replace(/\s+/g, '')}">Servings:</label>
+                <input type="number" id="${item.name.replace(/\s+/g, '')}" value="0" min="0" />
+            `;
+            foodItemsContainer.appendChild(foodItemDiv);
+        });
 
-            document.getElementById("waterL").innerHTML = totalWaterFootprint.toFixed(2) + " L";
-            document.getElementById("carbonKG").innerHTML = totalCarbonFootprint.toFixed(2) + " kg";
-            document.getElementById("nitrogenG").innerHTML = totalNitrogenFootprint.toFixed(2) + " g";
-        }
+        // Calculate Footprint
+        document.getElementById("submitButton").addEventListener("click", () => {
+            let totalWater = 0;
+            let totalCarbon = 0;
+            let totalNitrogen = 0;
 
-        document.getElementById("submitButton").addEventListener("click", calculateFootprint);
+            foodItems.forEach(item => {
+                const servings = parseInt(document.getElementById(item.name.replace(/\s+/g, '')).value) || 0;
+                totalWater += servings * item.water;
+                totalCarbon += servings * item.carbon;
+                totalNitrogen += servings * item.nitrogen;
+            });
+
+            document.getElementById("waterL").innerText = `${totalWater} L`;
+            document.getElementById("carbonKG").innerText = `${(totalCarbon).toFixed(2)} kg`;
+            document.getElementById("nitrogenG").innerText = `${totalNitrogen} g`;
+
+            // Show results and animate
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.style.display = "flex"; // Show the results
+            resultsDiv.style.opacity = "0"; // Reset opacity for animation
+            resultsDiv.style.transform = "translateY(20px)"; // Reset transform for animation
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                resultsDiv.style.opacity = "1";
+                resultsDiv.style.transform = "translateY(0)";
+            });
+        });
     </script>
 </body>
 </html>
